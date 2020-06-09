@@ -7,6 +7,7 @@ import 'package:controle.tarefas/service/tarefas.service.dart';
 import 'package:controle.tarefas/service/usuario.service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +29,126 @@ class InicioScreenState extends State<InicioScreen> {
 
   mensagem(String mensagem) {
     BotToast.showText(text: mensagem, contentColor: Colors.indigoAccent);
+  }
+
+  tarefasFazer(){
+    if (_tarefaService.tarefaFazerStore.tarefas.isEmpty) {
+      return Center(
+        child: Text("Sem atividades para exibir"),
+      );
+    }
+    return ListView(
+      children: _tarefaService.tarefaFazerStore.tarefas.map((tarefa) {
+        return Column(
+          children: <Widget>[
+            Dismissible(
+              child: CheckboxListTile(
+                activeColor: Colors.indigoAccent[100],
+                checkColor: Colors.indigo,
+                secondary: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TarefaScreen(
+                              acao: "Editar Tarefa a Fazer",
+                              tarefa: tarefa),
+                        ));
+                  },
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Divider(color: Colors.white12, height: 4),
+                    Row(children: <Widget>[Icon(Icons.assignment, size: 13), Text("  "), Expanded(child: Text("${tarefa.descricao}"))], mainAxisAlignment: MainAxisAlignment.start),
+                    Divider(color: Colors.white12, height: 1),
+                    Row(children: <Widget>[Icon(Icons.event, size: 13), Text("  ${DateFormat('dd/MM/yyyy').format(tarefa.prazo)}")], mainAxisAlignment: MainAxisAlignment.start),
+                    Divider(color: Colors.white12, height: 1),
+                    Row(children: <Widget>[Icon(Icons.person, size: 13), Text("  ${tarefa.criador.nome}")], mainAxisAlignment: MainAxisAlignment.start),
+                  ],
+                ),
+                title: Text(tarefa.titulo),
+                value: tarefa.concluida,
+                onChanged: (value) {
+                  _tarefaService.checkar(tarefa, value);
+                  mensagem("Tarefa feita >");
+                },
+              ),
+              key: UniqueKey(),
+              onDismissed: (direction) {
+                _tarefaService.removerTarefaFazer(tarefa);
+                mensagem("Tarefa a fazer excluída!");
+              },
+              background: Container(
+                  color: Colors.red, child: Icon(Icons.delete)),
+            ),
+            Divider(color: Colors.indigo[400], height: 7),
+          ],
+        );
+      }).toList(),
+    );
+  }
+
+  tarefasFeitas(){
+    if (_tarefaService.tarefaFeitasStore.tarefas.isEmpty) {
+      return Center(
+        child: Text("Sem atividades para exibir"),
+      );
+    }
+    return ListView(
+      children:
+      _tarefaService.tarefaFeitasStore.tarefas.map((tarefa) {
+        return Column(
+          children: <Widget>[
+            Dismissible(
+              child: CheckboxListTile(
+                activeColor: Colors.indigoAccent[100],
+                checkColor: Colors.indigo,
+                secondary: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TarefaScreen(
+                              acao: "Editar Tarefa Feita",
+                              tarefa: tarefa),
+                        ));
+                  },
+                ),
+                title: Row(children: <Widget>[Icon(Icons.title, size: 15),Text("  ${tarefa.titulo}")],
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Divider(color: Colors.white12, height: 2),
+                    Row(children: <Widget>[Icon(Icons.assignment, size: 13), Text("  "), Expanded(child: Text("${tarefa.descricao}"))], mainAxisAlignment: MainAxisAlignment.start),
+                    Divider(color: Colors.white12, height: 1),
+                    Row(children: <Widget>[Icon(Icons.event, size: 13), Text("  ${DateFormat('dd/MM/yyyy').format(tarefa.prazo)}")], mainAxisAlignment: MainAxisAlignment.start),
+                    Divider(color: Colors.white12, height: 1),
+                    Row(children: <Widget>[Icon(Icons.person, size: 13), Text("  ${tarefa.criador.nome}")], mainAxisAlignment: MainAxisAlignment.start),
+                  ],
+                ),
+                value: tarefa.concluida,
+                onChanged: (value) {
+                  _tarefaService.checkar(tarefa, value);
+                  mensagem("< Tarefa a fazer");
+                },
+              ),
+              key: UniqueKey(),
+              onDismissed: (direction) {
+                _tarefaService.removerTarefaFeita(tarefa);
+                mensagem("Tarefa feita excluída!");
+              },
+              background: Container(
+                  color: Colors.red, child: Icon(Icons.delete)),
+            ),
+            Divider(color: Colors.indigo[400], height: 7),
+          ],
+        );
+      }).toList(),
+    );
   }
 
   @override
@@ -181,108 +302,11 @@ class InicioScreenState extends State<InicioScreen> {
           children: <Widget>[
             //Tarefas a fazer
             Observer(builder: (context) {
-              if (_tarefaService.tarefaFazerStore.tarefas.isEmpty) {
-                return Center(
-                  child: Text("Sem atividades para exibir"),
-                );
-              }
-              return ListView(
-                children: _tarefaService.tarefaFazerStore.tarefas.map((tarefa) {
-                  return Column(
-                    children: <Widget>[
-                      Dismissible(
-                        child: CheckboxListTile(
-                          activeColor: Colors.indigoAccent[100],
-                          checkColor: Colors.indigo,
-                          secondary: IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => TarefaScreen(
-                                        acao: "Editar Tarefa a Fazer",
-                                        tarefa: tarefa),
-                                  ));
-                            },
-                          ),
-                          subtitle: Text(
-                              "ID: ${tarefa.id} - Criador: ${tarefa.criador.nome}\nPrazo: " +
-                                  DateFormat('dd-MM-yyyy')
-                                      .format(tarefa.prazo) +
-                                  "\n${tarefa.descricao}"),
-                          title: Text(tarefa.titulo),
-                          value: tarefa.concluida,
-                          onChanged: (value) {
-                            _tarefaService.checkar(tarefa, value);
-                            mensagem("Tarefa feita >");
-                          },
-                        ),
-                        key: UniqueKey(),
-                        onDismissed: (direction) {
-                          _tarefaService.removerTarefaFazer(tarefa);
-                          mensagem("Tarefa a fazer excluída!");
-                        },
-                        background: Container(
-                            color: Colors.red, child: Icon(Icons.delete)),
-                      ),
-                      Divider(color: Colors.indigoAccent),
-                    ],
-                  );
-                }).toList(),
-              );
+              return tarefasFazer();
             }),
             //Tarefas feitas
             Observer(builder: (context) {
-              if (_tarefaService.tarefaFeitasStore.tarefas.isEmpty) {
-                return Center(
-                  child: Text("Sem atividades para exibir"),
-                );
-              }
-              return ListView(
-                children:
-                    _tarefaService.tarefaFeitasStore.tarefas.map((tarefa) {
-                  return Column(
-                    children: <Widget>[
-                      Dismissible(
-                        child: CheckboxListTile(
-                          activeColor: Colors.indigoAccent[100],
-                          checkColor: Colors.indigo,
-                          secondary: IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => TarefaScreen(
-                                        acao: "Editar Tarefa Feita",
-                                        tarefa: tarefa),
-                                  ));
-                            },
-                          ),
-                          subtitle: Text("ID: ${tarefa.id}\nPrazo: " +
-                              DateFormat('dd-MM-yyyy').format(tarefa.prazo) +
-                              "\n${tarefa.descricao}"),
-                          title: Text(tarefa.titulo),
-                          value: tarefa.concluida,
-                          onChanged: (value) {
-                            _tarefaService.checkar(tarefa, value);
-                            mensagem("< Tarefa a fazer");
-                          },
-                        ),
-                        key: UniqueKey(),
-                        onDismissed: (direction) {
-                          _tarefaService.removerTarefaFeita(tarefa);
-                          mensagem("Tarefa feita excluída!");
-                        },
-                        background: Container(
-                            color: Colors.red, child: Icon(Icons.delete)),
-                      ),
-                      Divider(color: Colors.indigoAccent),
-                    ],
-                  );
-                }).toList(),
-              );
+              return tarefasFeitas();
             }),
           ],
         ),
@@ -292,7 +316,7 @@ class InicioScreenState extends State<InicioScreen> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        TarefaScreen(acao: "Nova Tarefa", tarefa: Tarefa())));
+                        TarefaScreen(acao: "Nova Tarefa a Fazer", tarefa: Tarefa())));
           },
           child: Icon(Icons.add),
         ),

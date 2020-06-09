@@ -39,7 +39,7 @@ class _UsuarioScreenState extends State<UsuarioScreen> {
                           keyboardType: TextInputType.text,
                           controller: controlador,
                           style: style,
-                          maxLength: 25,
+                          maxLength: 20,
                           decoration: InputDecoration(
                               contentPadding:
                                   EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
@@ -73,14 +73,12 @@ class _UsuarioScreenState extends State<UsuarioScreen> {
   usuarioNomeado(Usuario usuario) {
     return Scaffold(
         backgroundColor: Colors.indigo,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(30),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
               child: Container(
                 color: Colors.white12,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 50),
+                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 50),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -137,27 +135,44 @@ class _UsuarioScreenState extends State<UsuarioScreen> {
               return usuarioNomeado(usuarioService.getUsuario());
             else
               return nomearUsuario();
-          } else {
+          } else if  (snapshot.hasError){
             return Scaffold(
                 backgroundColor: Colors.indigo,
-                body: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(30),
-                    child: Container(
-                      color: Colors.white12,
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 50),
-                      child: Center(
+                body: SafeArea(
+                  child: Center(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          color: Colors.white12,
+                          padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
+                          child: Column(
+                            children: <Widget>[
+                              Text("Encontramos um erro...\nReinicie o aplicativo\n"),
+                              CircularProgressIndicator(),
+                            ],
+                          ),
+                        ),
+                      )
+                  ),
+                )
+            );
+        } else{
+            return Scaffold(
+                backgroundColor: Colors.indigo,
+                body: SafeArea(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        color: Colors.white12,
+                        padding: EdgeInsets.symmetric(horizontal: 25, vertical: 30),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Text("Carregando usuários e tarefas..."),
+                            Text("Carregando usuários e tarefas...\n"),
                             CircularProgressIndicator(),
                           ],
                         ),
-                    ),
+                      ),
+                    )
                   ),
-                )
                 )
             );
           }

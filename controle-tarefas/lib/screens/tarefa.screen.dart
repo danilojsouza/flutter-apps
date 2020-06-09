@@ -61,11 +61,11 @@ class TarefaScreenState extends State<TarefaScreen> {
           titulo: this._titulo,
           descricao: this._descricao,
           prazo: this._prazo,
-      concluida: tarefa.concluida);
+      concluida: tarefa.concluida,
+      criador: (tarefa.criador != null) ? tarefa.criador  : _usuarioService.getUsuario());
 
       //Nova Tarefa
       if(tarefaNova.id == null){
-        tarefaNova.criador = _usuarioService.getUsuario();
         this._tarefaService.salvar(tarefaNova).then((value) {
         mensagem("Tarefa ${value.titulo} Adicionada!");
         });
@@ -124,8 +124,7 @@ class TarefaScreenState extends State<TarefaScreen> {
                 keyboardType: TextInputType.text,
                 focusNode: _focusDescricao,
                 textInputAction: TextInputAction.next,
-                minLines: 2,
-                maxLines: 4,
+                maxLength: 100,
                 initialValue: (tarefa.descricao==null) ? "" : tarefa.descricao,
                 validator: (descricao) {
                   if (descricao.isEmpty) {
