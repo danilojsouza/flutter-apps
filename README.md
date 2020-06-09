@@ -11,5 +11,4 @@ Criar/Apagar Tasks, Conversão JSON, Renomear lista, DatePicker, Marcar task fei
 Aplicativo de tarefas um pouco mais complexo com Mobx. Projeto para a matéria de App da minha universidade.
 Criar/Excluir/Editar/Concluir/Salvar Tarefas a Fazer e Tarefas Feitas, Entrar como usuário, Conversão e Armazenamento JSON (Shared Preferences), DatePicker, TabBar.
 
-<img src="https://media3.giphy.com/media/gEvxFLfPBlYcETsSrj/giphy.gif" alt="alt text" width="352" height="640">
-<img src="https://media3.giphy.com/media/frMWEw67xvFZXErHtA/giphy.gif" alt="alt text" width="352" height="640">
+   <img src="https://media3.giphy.com/media/gEvxFLfPBlYcETsSrj/giphy.gif" alt="alt text" width="352" height="640">       <img src="https://media3.giphy.com/media/frMWEw67xvFZXErHtA/giphy.gif" alt="alt text" width="352" height="640">
